@@ -31,14 +31,14 @@ Usage
 =====
 You can use the following properties to enable remote data tabs:
 
+
 |   Property   |   Value    |   Effect  | Required |
-|--------------|-------------| ------------|
-|data-tab-url  | url |  The remote data url  | True
-|data-tab-always-refresh | true |  Always refresh this tab | False
-|data-tab-callback | function-name | Callback to be fired upon show (will be executed after the data is loaded).
-It takes the following arguments: html, trigger, container, (optional) json data that was sent | False
-|data-tab-json | json | JSON data to be send when fetching the URL | False
-|data-tab-delay | number |  Simulate a delay (in miliseconds) | False
+|--------------|-------------| ------------|------------ |
+|data-tab-url  | url |  The remote data url  | True |
+|data-tab-always-refresh | true |  Always refresh this tab | False |
+|data-tab-callback | function-name | Callback to be fired upon show (will be executed after the data is loaded). It takes the following arguments: html, trigger, container, (optional) json data that was sent | False |
+|data-tab-json | json | JSON data to be send when fetching the URL | False |
+|data-tab-delay | number |  Simulate a delay (in miliseconds) | False |
 
 Note
 ====
