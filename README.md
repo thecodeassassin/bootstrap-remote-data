@@ -14,7 +14,7 @@ Simple boostrap plugin to allow tabs to fetch their data from a remote source
 Requirements
 ============
 
-* Bootstrap 2.3x >
+* Bootstrap 2.3 or higher
 
 Installation
 ============
@@ -39,6 +39,8 @@ You can use the following properties to enable remote data tabs:
 |data-tab-callback | function-name | Callback to be fired upon show (will be executed after the data is loaded). It takes the following arguments: html, trigger, container, (optional) json data that was sent | False |
 |data-tab-json | json | JSON data to be send when fetching the URL | False |
 |data-tab-delay | number |  Simulate a delay (in miliseconds) | False |
+
+Check the demo for details on how to use this plugin.
 
 Note
 ====
