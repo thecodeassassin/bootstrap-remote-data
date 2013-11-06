@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bootstrap remote data tabs plugin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/jquery.loadmask.css" rel="stylesheet">
+
+    <style type="text/css">
+        div.tab-pane {
+            min-height: 300px;
+        }
+    </style>
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+
+    <![endif]-->
+</head>
+<body>
+<h1>Bootstrap tabs remote data plugin demo</h1>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#home" data-toggle="tab">No remote data</a></li>
+    <li><a href="#simple" data-toggle="tab" data-tab-url="remote/normal.html">Simple remote data</a></li>
+    <li><a href="#simple2" data-toggle="tab" data-tab-url="remote/delay.html" data-tab-delay="3000">Simple remote data (with 3 second delay)</a></li>
+    <li><a href="#callback" data-toggle="tab" data-tab-url="remote/callback.html" data-tab-callback="sampleCallback" >Remote data with callback</a></li>
+    <li><a href="#jsondata" data-toggle="tab" data-tab-json='{"name":"John Doe"}'
+           data-tab-url="remote/json.html" data-tab-callback="showJsonName" >Remote data with callback and json data</a></li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div class="tab-pane active" id="home">
+        <p>No special data here!</p>
+    </div>
+    <div class="tab-pane" id="simple"></div>
+    <div class="tab-pane" id="simple2"></div>
+    <div class="tab-pane" id="callback"></div>
+    <div class="tab-pane" id="jsondata"></div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="http://codeorigin.jquery.com/jquery-2.0.3.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+
+<script src="../js/jquery.loadmask.js"></script>
+<script src="../js/bootstrap-remote-tabs.js"></script>
+
+<script type="text/javascript">
+
+    /**
+     * @param data
+    */
+    function sampleCallback() {
+        alert('Hello, World!');
+    }
+    /**
+     *
+     * @param data
+     * @param trigger
+     * @param container
+     * @param json
+     */
+    function showJsonName(data, trigger, container, json) {
+        alert('Welcome, ' +json.name +'!');
+    }
+</script>
+</body>
+</html>
