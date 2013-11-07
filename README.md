@@ -10,6 +10,7 @@ This plugin uses the jQuery loadmask plugin by Sergiy Kovalchuk.
 
 Simple boostrap plugin to allow tabs to fetch their data from a remote source
 
+*The script is only 1.7k compressed!*
 
 Requirements
 ============
@@ -47,3 +48,15 @@ Note
 This plugin hooks into the bootstrap tabs 'show' event. In order to use a custom event callback, you can provide data-tab-callback
 to let the plugin execute your custom callback. If you want a callback to be fired after the show event, use the native
 shown event.
+
+Changelog
+===
+
+Version 1.0.1
+------
+Added minified version of the script. Fixed small issue with gracefully degrading
+
+Version 1.0.0
+------
+- Initial release
+
