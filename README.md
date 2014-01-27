@@ -52,6 +52,11 @@ shown event.
 Changelog
 ===
 
+Version 1.1.0
+------
+Added feature to go to the tab specified in the URL (for example #tab1 will open the tab with ID #tab1)
+
+
 Version 1.0.1
 ------
 Added minified version of the script. Fixed small issue with gracefully degrading
