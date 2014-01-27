@@ -1,7 +1,8 @@
 var $ = jQuery;
-/**
+/*!
  *
  * Bootstrap remote data tabs plugin
+ * Version 1.0.1
  *
  * Author: Stephen Hoogendijk (TheCodeAssassin)
  *
@@ -10,7 +11,20 @@ var $ = jQuery;
  * @returns {{hasLoadingMask: boolean, load: Function, _executeRemoteCall: Function}}
  * @constructor
  */
+var hasLoadingMask = (jQuery().mask ? true : false),
+    bootstrapVersion2 = (jQuery().typeahead ? true : false);
+
+// hook the event based on the version of bootstrap
+var showEvent = (bootstrapVersion2 ? 'show' : 'show.bs.tab');
+
+$(function() {
+    var hash = document.location.hash;
+    if (hash) {
+       $('.nav-tabs a[href*='+hash+']').tab(showEvent);
+    } 
+});
 var RemoteTabs = function() {
+
   var obj = {
       hasLoadingMask: false,
 
@@ -32,15 +46,18 @@ var RemoteTabs = function() {
                   tabData,
                   tabCallback,
                   url,
-                  simulateDelay;
+                  simulateDelay,
+                  alwaysRefresh;
 
               // check if the tab has a data-url property
               if(tabObj.is('[data-tab-url]')) {
                   url = tabObj.attr('data-tab-url');
-                  tabDiv = $(tabObj.attr('href'));
+                  tabDiv = $( '#' + tabObj.attr('href').split('#')[1]);
                   tabData = tabObj.attr('data-tab-json') || [];
                   tabCallback = tabObj.attr('data-tab-callback') || null;
                   simulateDelay = tabObj.attr('data-tab-delay') || null;
+                  alwaysRefresh = (tabObj.is('[data-tab-always-refresh]')
+                      && tabObj.attr('data-tab-always-refresh') == 'true') || null;
 
                   if(tabData.length > 0) {
                       try
@@ -54,12 +71,17 @@ var RemoteTabs = function() {
                   }
 
                   tabObj.on(tabEvent, function(e) {
+                      
+                      // change the hash of the location
+                      window.location.hash = e.target.hash;
 
-                      if (!tabObj.hasClass("loaded") || tabObj.is('[data-tab-always-refresh]')) {
+                      if ((!tabObj.hasClass("loaded") || alwaysRefresh) &&
+                          !tabObj.hasClass('loading')) {
 
                           if(me.hasLoadingMask) {
                               tabDiv.mask('Loading...');
                           }
+                          tabObj.addClass('loading');
 
                           // delay the json call if it has been given a value
                           if(simulateDelay) {
@@ -97,6 +119,7 @@ var RemoteTabs = function() {
             url: url,
             data: customData || [],
             success: function(data) {
+                trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
                     tabContainer.unmask();
                 }
@@ -111,6 +134,7 @@ var RemoteTabs = function() {
                 }
             },
             fail: function(data) {
+                trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
                     tabContainer.unmask();
                 }
@@ -118,12 +142,8 @@ var RemoteTabs = function() {
         });
     }
   };
-    var hasLoadingMask = (jQuery().mask ? true : false),
-    bootstrapVersion2 = (jQuery().typeahead ? true : false);
 
-    // hook the event based on the version of bootstrap
-    var event = (bootstrapVersion2 ? 'show' : 'show.bs.tab');
-    obj.load(event, hasLoadingMask);
+    obj.load(showEvent, hasLoadingMask);
 
     return obj;
 };
