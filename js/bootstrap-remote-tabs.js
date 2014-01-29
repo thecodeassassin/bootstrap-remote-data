@@ -2,7 +2,7 @@ var $ = jQuery;
 /*!
  *
  * Bootstrap remote data tabs plugin
- * Version 1.0.1
+ * Version 1.1.0
  *
  * Author: Stephen Hoogendijk (TheCodeAssassin)
  *
@@ -44,6 +44,7 @@ var RemoteTabs = function() {
               var tabObj = $(tab),
                   tabDiv,
                   tabData,
+                  tabParent,
                   tabCallback,
                   url,
                   simulateDelay,
@@ -54,6 +55,7 @@ var RemoteTabs = function() {
                   url = tabObj.attr('data-tab-url');
                   tabDiv = $( '#' + tabObj.attr('href').split('#')[1]);
                   tabData = tabObj.attr('data-tab-json') || [];
+                  tabParent = tabObj.attr('data-parent') || null;
                   tabCallback = tabObj.attr('data-tab-callback') || null;
                   simulateDelay = tabObj.attr('data-tab-delay') || null;
                   alwaysRefresh = (tabObj.is('[data-tab-always-refresh]')
@@ -87,10 +89,10 @@ var RemoteTabs = function() {
                           if(simulateDelay) {
                               clearTimeout(window.timer);
                               window.timer=setTimeout(function(){
-                                me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
+                                me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv, tabParent);
                               }, simulateDelay);
                           } else {
-                              me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
+                              me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv, tabParent);
                           }
 
 
@@ -111,7 +113,7 @@ var RemoteTabs = function() {
        * @param tabContainer
        * @private
        */
-    _executeRemoteCall: function(url, customData, callbackFn, trigger, tabContainer) {
+    _executeRemoteCall: function(url, customData, callbackFn, trigger, tabContainer, tabParent) {
         var me = this;
 
 
@@ -124,13 +126,19 @@ var RemoteTabs = function() {
                     tabContainer.unmask();
                 }
                 if (data) {
+                    
+                    if (tabParent != null) {
+                      $(tabParent + ' > .remove-rd').empty();
+                    }  
+                    
+                    tabContainer.html(data);
+
                     if(typeof window[callbackFn] == 'function') {
                         window[callbackFn].call(null, data, trigger, tabContainer, customData);
                     }
                     if(!trigger.hasClass("loaded")) {
                         trigger.addClass("loaded");
                     }
-                    tabContainer.html(data);
                 }
             },
             fail: function(data) {
