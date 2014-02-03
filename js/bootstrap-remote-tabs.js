@@ -19,16 +19,20 @@ var tabShowEvent = (bootstrapVersion2 ? 'show' : 'show.bs.tab');
 var accordionShowEvent = (bootstrapVersion2 ? 'show' : 'show.bs.collapse');
 
 $(function() {
+    // try to navigate to the tab/accordion last given in the URL
     var hash = document.location.hash;
     if (hash) {
-       var hasTab = $('.nav-tabs a[href*='+hash+']');	
+       var hasTab = $('[data-toggle=tab][href='+hash+']');	
        if (hasTab) {
-            hasTab.tab(tabShowEvent);
+            hasTab.tab('show');
        }
    
-       var hasAccordion = $('.accordion-heading a[href*='+hash+']');
-       if (hasAccordion) {
-           hasAccordion.collapse(accordionShowEvent);
+       var hasAccordion = $('[data-toggle=collapse][href='+hash+']');
+       if (hasAccordion) {	   
+           // for some reason we cannot execute the 'show' event for an accordion properly, so here's a workaround        
+           if (hasAccordion[0] != $('[data-toggle=collapse]:first')[0]) {
+ 	       hasAccordion.click();
+           }
        }
     } 
 });
@@ -50,30 +54,32 @@ var RemoteTabs = function() {
 
           // enable all remote data tabs
           $('[data-toggle=tab], [data-toggle=collapse]').each(function(k, tab) {
-              var tabObj = $(tab),
-                  tabDiv,
-                  tabData,
-                  tabCallback,
+              var bsObj = $(tab),
+                  bsDiv,
+                  bsData,
+                  bsCallback,
                   url,
                   simulateDelay,
                   alwaysRefresh,
-		  hasOpenPanel = false;
+		  hasOpenPanel = false,
+		  originalObj;
 
               // check if the tab has a data-url property
-              if(tabObj.is('[data-tab-url]')) {
-                  url = tabObj.attr('data-tab-url');
-                  tabDiv = $( '#' + tabObj.attr('href').split('#')[1]);
-                  tabData = tabObj.attr('data-tab-json') || [];
-                  tabCallback = tabObj.attr('data-tab-callback') || null;
-                  simulateDelay = tabObj.attr('data-tab-delay') || null;
-                  alwaysRefresh = (tabObj.is('[data-tab-always-refresh]')
-                      && tabObj.attr('data-tab-always-refresh') == 'true') || null,
-		  showEvent = (tabObj.attr('data-toggle') == 'tab' ? tabShowEvent : accordionShowEvent);
+              if(bsObj.is('[data-tab-url]')) {
+                  url = bsObj.attr('data-tab-url');
+                  bsDiv = $( '#' + bsObj.attr('href').split('#')[1]);
+                  bsData = bsObj.attr('data-tab-json') || [];
+                  bsCallback = bsObj.attr('data-tab-callback') || null;
+                  simulateDelay = bsObj.attr('data-tab-delay') || null;
+                  alwaysRefresh = (bsObj.is('[data-tab-always-refresh]')
+                      && bsObj.attr('data-tab-always-refresh') == 'true') || null,
+		  originalObj = bsObj,
+		  showEvent = (bsObj.attr('data-toggle') == 'tab' ? tabShowEvent : accordionShowEvent);
 
-                  if(tabData.length > 0) {
+                  if(bsData.length > 0) {
                       try
                       {
-                        tabData = $.parseJSON(tabData);
+                        bsData = $.parseJSON(bsData);
                       } catch (exc) {
                           console.log('Invalid json passed to data-tab-json');
                           console.log(exc);
@@ -82,22 +88,22 @@ var RemoteTabs = function() {
                   }
                   
 		  if (showEvent == accordionShowEvent) {
-		      hasOpenPanel = tabDiv.hasClass('in');	
+		      hasOpenPanel = bsDiv.hasClass('in');	
 	              // when an accordion is triggered, make the div the triggered object instead of the link
 		      if (bootstrapVersion2) {
-  		          tabObj = tabObj.parent();
+  		          bsObj = bsObj.parent();
                       } else {
-  		          tabObj = tabObj.parents('.panel');
+  		          bsObj = bsObj.parents('.panel');
                       }
 			
                       // If there is a panel already opened, make sure the data url is fetched
                       if (hasOpenPanel) {
-		          me._triggerChange(null, url, tabData, tabCallback, tabObj, tabDiv, simulateDelay, alwaysRefresh);
+		          me._triggerChange(null, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj);
 	              }
 		  }
 
-                  tabObj.on(showEvent, function(e) {
-                      me._triggerChange(e, url, tabData, tabCallback, tabObj, tabDiv, simulateDelay, alwaysRefresh);
+                  bsObj.on(showEvent, function(e) {
+                      me._triggerChange(e, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj);
                   });
 
               }
@@ -108,32 +114,43 @@ var RemoteTabs = function() {
     * Trigger the change
     * 
     * @param e
-    * @param objDetails
+    * @param url
+    * @param bsData
+    * @param bsCallback
+    * @param bsObj
+    * @param bsDiv
+    * @param simulateDelay
+    * @param alwaysRefresh 
+    * @param originalObj
     */
-    _triggerChange: function(e, url, tabData, tabCallback, tabObj, tabDiv, simulateDelay, alwaysRefresh) {
+    _triggerChange: function(e, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj) {
         var me = this;
       
         // change the hash of the location
-	if (e && e.target.hash != 'undefined') {
-             window.location.hash = e.target.hash;
+	if (e) {
+	     if (typeof e.target.hash != 'undefined') {
+                 window.location.hash = e.target.hash;
+	     } else {       
+                window.location.hash = originalObj.prop('hash');
+             }
         }
 
-        if ((!tabObj.hasClass("loaded") || alwaysRefresh) &&
-              !tabObj.hasClass('loading')) {
+        if ((!bsObj.hasClass("loaded") || alwaysRefresh) &&
+              !bsObj.hasClass('loading')) {
 
 	  if(me.hasLoadingMask) {
-	      tabDiv.mask('Loading...');
+	      bsDiv.mask('Loading...');
 	  }
-	  tabObj.addClass('loading');
+	  bsObj.addClass('loading');
 
 	  // delay the json call if it has been given a value
 	  if(simulateDelay) {
 	      clearTimeout(window.timer);
 	      window.timer=setTimeout(function(){
-		me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
+		me._executeRemoteCall(url, bsData, bsCallback, bsObj, bsDiv);
 	      }, simulateDelay);
 	  } else {
-	      me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
+	      me._executeRemoteCall(url, bsData, bsCallback, bsObj, bsDiv);
 	  }
 
 
