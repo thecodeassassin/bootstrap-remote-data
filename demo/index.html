@@ -9,7 +9,7 @@
 
     <style type="text/css">
         div.tab-pane {
-            min-height: 300px;
+            min-height: 200px;
         }
     </style>
 
@@ -23,7 +23,9 @@
 </head>
 <body>
 <h1>Bootstrap tabs remote data plugin demo</h1>
+<hr>
 
+<h2>Tabs demo</h2>
 <!-- Nav tabs -->
 <ul class="nav nav-tabs">
     <li class="active"><a href="#home" data-toggle="tab">No remote data</a></li>
@@ -43,6 +45,47 @@
     <div class="tab-pane" id="simple2"></div>
     <div class="tab-pane" id="callback"></div>
     <div class="tab-pane" id="jsondata"></div>
+</div>
+
+<h2>Accordion demo</h2>
+
+<div class="panel-group" id="accordion">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" data-tab-url="remote/normal.html">Simple remote data</a>
+      </h4>
+    </div>
+    <div id="collapseOne" class="panel-collapse collapse in">
+      <div class="panel-body">&nbsp;</div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" data-tab-url="remote/delay.html" data-tab-delay="3000">
+         Simple remote data (with 3 second delay)
+        </a>
+      </h4>
+    </div>
+    <div id="collapseTwo" class="panel-collapse collapse">
+      <div class="panel-body">&nbsp;
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" data-toggle="tab" data-tab-url="remote/callback.html" data-tab-callback="sampleCallback">
+	  Remote data with callback
+        </a>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">&nbsp;
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

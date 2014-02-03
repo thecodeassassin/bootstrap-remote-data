@@ -2,7 +2,7 @@ var $ = jQuery;
 /*!
  *
  * Bootstrap remote data tabs plugin
- * Version 1.0.1
+ * Version 1.1.1
  *
  * Author: Stephen Hoogendijk (TheCodeAssassin)
  *
@@ -15,12 +15,25 @@ var hasLoadingMask = (jQuery().mask ? true : false),
     bootstrapVersion2 = (jQuery().typeahead ? true : false);
 
 // hook the event based on the version of bootstrap
-var showEvent = (bootstrapVersion2 ? 'show' : 'show.bs.tab');
+var tabShowEvent = (bootstrapVersion2 ? 'show' : 'show.bs.tab');
+var accordionShowEvent = (bootstrapVersion2 ? 'show' : 'show.bs.collapse');
 
 $(function() {
+    // try to navigate to the tab/accordion last given in the URL
     var hash = document.location.hash;
     if (hash) {
-       $('.nav-tabs a[href*='+hash+']').tab(showEvent);
+       var hasTab = $('[data-toggle=tab][href='+hash+']');	
+       if (hasTab) {
+            hasTab.tab('show');
+       }
+   
+       var hasAccordion = $('[data-toggle=collapse][href='+hash+']');
+       if (hasAccordion) {	   
+           // for some reason we cannot execute the 'show' event for an accordion properly, so here's a workaround        
+           if (hasAccordion[0] != $('[data-toggle=collapse]:first')[0]) {
+ 	       hasAccordion.click();
+           }
+       }
     } 
 });
 var RemoteTabs = function() {
@@ -33,74 +46,117 @@ var RemoteTabs = function() {
        * @param tabEvent
        * @param hasLoadingMask
        */
-      load: function(tabEvent, hasLoadingMask) {
+      load: function(hasLoadingMask) {
 
           var me = this;
 
           me.hasLoadingMask = !!hasLoadingMask;
 
           // enable all remote data tabs
-          $('[data-toggle=tab]').each(function(k, tab) {
-              var tabObj = $(tab),
-                  tabDiv,
-                  tabData,
-                  tabCallback,
+          $('[data-toggle=tab], [data-toggle=collapse]').each(function(k, obj) {
+              var bsObj = $(obj),
+                  bsDiv,
+                  bsData,
+                  bsCallback,
                   url,
                   simulateDelay,
-                  alwaysRefresh;
+                  alwaysRefresh,
+		  hasOpenPanel = false,
+		  originalObj;
 
               // check if the tab has a data-url property
-              if(tabObj.is('[data-tab-url]')) {
-                  url = tabObj.attr('data-tab-url');
-                  tabDiv = $( '#' + tabObj.attr('href').split('#')[1]);
-                  tabData = tabObj.attr('data-tab-json') || [];
-                  tabCallback = tabObj.attr('data-tab-callback') || null;
-                  simulateDelay = tabObj.attr('data-tab-delay') || null;
-                  alwaysRefresh = (tabObj.is('[data-tab-always-refresh]')
-                      && tabObj.attr('data-tab-always-refresh') == 'true') || null;
+              if(bsObj.is('[data-tab-url]')) {
+                  url = bsObj.attr('data-tab-url');
+                  bsDiv = $( '#' + bsObj.attr('href').split('#')[1]);
+                  bsData = bsObj.attr('data-tab-json') || [];
+                  bsCallback = bsObj.attr('data-tab-callback') || null;
+                  simulateDelay = bsObj.attr('data-tab-delay') || null;
+                  alwaysRefresh = (bsObj.is('[data-tab-always-refresh]')
+                      && bsObj.attr('data-tab-always-refresh') == 'true') || null,
+		  originalObj = bsObj,
+		  showEvent = (bsObj.attr('data-toggle') == 'tab' ? tabShowEvent : accordionShowEvent);
 
-                  if(tabData.length > 0) {
+                  if(bsData.length > 0) {
                       try
                       {
-                        tabData = $.parseJSON(tabData);
+                        bsData = $.parseJSON(bsData);
                       } catch (exc) {
                           console.log('Invalid json passed to data-tab-json');
                           console.log(exc);
                       }
 
                   }
-
-                  tabObj.on(tabEvent, function(e) {
-                      
-                      // change the hash of the location
-                      window.location.hash = e.target.hash;
-
-                      if ((!tabObj.hasClass("loaded") || alwaysRefresh) &&
-                          !tabObj.hasClass('loading')) {
-
-                          if(me.hasLoadingMask) {
-                              tabDiv.mask('Loading...');
-                          }
-                          tabObj.addClass('loading');
-
-                          // delay the json call if it has been given a value
-                          if(simulateDelay) {
-                              clearTimeout(window.timer);
-                              window.timer=setTimeout(function(){
-                                me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
-                              }, simulateDelay);
-                          } else {
-                              me._executeRemoteCall(url, tabData, tabCallback, tabObj, tabDiv);
-                          }
-
-
+                  
+		  if (showEvent == accordionShowEvent) {
+		      hasOpenPanel = bsDiv.hasClass('in');	
+	              // when an accordion is triggered, make the div the triggered object instead of the link
+		      if (bootstrapVersion2) {
+  		          bsObj = bsObj.parent();
+                      } else {
+  		          bsObj = bsObj.parents('.panel');
                       }
+			
+                      // If there is a panel already opened, make sure the data url is fetched
+                      if (hasOpenPanel) {
+		          me._triggerChange(null, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj);
+	              }
+		  }
 
+                  bsObj.on(showEvent, function(e) {
+                      me._triggerChange(e, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj);
                   });
 
               }
           });
     },
+
+    /**
+    * Trigger the change
+    * 
+    * @param e
+    * @param url
+    * @param bsData
+    * @param bsCallback
+    * @param bsObj
+    * @param bsDiv
+    * @param simulateDelay
+    * @param alwaysRefresh 
+    * @param originalObj
+    */
+    _triggerChange: function(e, url, bsData, bsCallback, bsObj, bsDiv, simulateDelay, alwaysRefresh, originalObj) {
+        var me = this;
+      
+        // change the hash of the location
+	if (e) {
+	     if (typeof e.target.hash != 'undefined') {
+                 window.location.hash = e.target.hash;
+	     } else {       
+                window.location.hash = originalObj.prop('hash');
+             }
+        }
+
+        if ((!bsObj.hasClass("loaded") || alwaysRefresh) &&
+              !bsObj.hasClass('loading')) {
+
+	  if(me.hasLoadingMask) {
+	      bsDiv.mask('Loading...');
+	  }
+	  bsObj.addClass('loading');
+
+	  // delay the json call if it has been given a value
+	  if(simulateDelay) {
+	      clearTimeout(window.timer);
+	      window.timer=setTimeout(function(){
+		me._executeRemoteCall(url, bsData, bsCallback, bsObj, bsDiv);
+	      }, simulateDelay);
+	  } else {
+	      me._executeRemoteCall(url, bsData, bsCallback, bsObj, bsDiv);
+	  }
+
+
+        }
+    },
+
 
       /**
        * Execute the remote call
@@ -108,10 +164,10 @@ var RemoteTabs = function() {
        * @param customData
        * @param callbackFn
        * @param trigger
-       * @param tabContainer
+       * @param dataContainer
        * @private
        */
-    _executeRemoteCall: function(url, customData, callbackFn, trigger, tabContainer) {
+    _executeRemoteCall: function(url, customData, callbackFn, trigger, dataContainer) {
         var me = this;
 
 
@@ -121,29 +177,30 @@ var RemoteTabs = function() {
             success: function(data) {
                 trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
-                    tabContainer.unmask();
+                    dataContainer.unmask();
                 }
                 if (data) {
                     if(typeof window[callbackFn] == 'function') {
-                        window[callbackFn].call(null, data, trigger, tabContainer, customData);
+                        window[callbackFn].call(null, data, trigger, dataContainer, customData);
                     }
                     if(!trigger.hasClass("loaded")) {
                         trigger.addClass("loaded");
                     }
-                    tabContainer.html(data);
+                    dataContainer.html(data);
                 }
             },
-            fail: function(data) {
+            error: function(data, status, error) {
+		dataContainer.html("An error occured while loading the data: " + error);
                 trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
-                    tabContainer.unmask();
+                    dataContainer.unmask();
                 }
             }
         });
     }
   };
 
-    obj.load(showEvent, hasLoadingMask);
+    obj.load( hasLoadingMask);
 
     return obj;
 };
