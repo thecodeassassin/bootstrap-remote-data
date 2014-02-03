@@ -53,8 +53,8 @@ var RemoteTabs = function() {
           me.hasLoadingMask = !!hasLoadingMask;
 
           // enable all remote data tabs
-          $('[data-toggle=tab], [data-toggle=collapse]').each(function(k, tab) {
-              var bsObj = $(tab),
+          $('[data-toggle=tab], [data-toggle=collapse]').each(function(k, obj) {
+              var bsObj = $(obj),
                   bsDiv,
                   bsData,
                   bsCallback,
@@ -164,10 +164,10 @@ var RemoteTabs = function() {
        * @param customData
        * @param callbackFn
        * @param trigger
-       * @param tabContainer
+       * @param dataContainer
        * @private
        */
-    _executeRemoteCall: function(url, customData, callbackFn, trigger, tabContainer) {
+    _executeRemoteCall: function(url, customData, callbackFn, trigger, dataContainer) {
         var me = this;
 
 
@@ -177,23 +177,23 @@ var RemoteTabs = function() {
             success: function(data) {
                 trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
-                    tabContainer.unmask();
+                    dataContainer.unmask();
                 }
                 if (data) {
                     if(typeof window[callbackFn] == 'function') {
-                        window[callbackFn].call(null, data, trigger, tabContainer, customData);
+                        window[callbackFn].call(null, data, trigger, dataContainer, customData);
                     }
                     if(!trigger.hasClass("loaded")) {
                         trigger.addClass("loaded");
                     }
-                    tabContainer.html(data);
+                    dataContainer.html(data);
                 }
             },
             error: function(data, status, error) {
-		tabContainer.html("An error occured while loading the data: " + error);
+		dataContainer.html("An error occured while loading the data: " + error);
                 trigger.removeClass('loading');
                 if(me.hasLoadingMask) {
-                    tabContainer.unmask();
+                    dataContainer.unmask();
                 }
             }
         });
