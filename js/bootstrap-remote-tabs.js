@@ -42,8 +42,6 @@ var RemoteTabs = function() {
       hasLoadingMask: false,
 
       /**
-       *
-       * @param tabEvent
        * @param hasLoadingMask
        */
       load: function(hasLoadingMask) {
@@ -71,9 +69,8 @@ var RemoteTabs = function() {
                   bsData = bsObj.attr('data-tab-json') || [];
                   bsCallback = bsObj.attr('data-tab-callback') || null;
                   simulateDelay = bsObj.attr('data-tab-delay') || null;
-                  alwaysRefresh = (bsObj.is('[data-tab-always-refresh]')
-                      && bsObj.attr('data-tab-always-refresh') == 'true') || null,
-		  originalObj = bsObj,
+                  alwaysRefresh = (bsObj.is('[data-tab-always-refresh]') && bsObj.attr('data-tab-always-refresh') == 'true') || null;
+		          originalObj = bsObj;
 		  showEvent = (bsObj.attr('data-toggle') == 'tab' ? tabShowEvent : accordionShowEvent);
 
                   if(bsData.length > 0) {
