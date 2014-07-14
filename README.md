@@ -55,7 +55,7 @@ shown event.
 
 Changelog
 ===
-Version 1.1.2
+Version 1.1.3
 ------
 CSS Selector fix for matching #hash anywhere in the "href" attribute
 

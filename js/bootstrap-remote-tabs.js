@@ -2,7 +2,7 @@ var $ = jQuery;
 /*!
  *
  * Bootstrap remote data tabs plugin
- * Version 1.1.2
+ * Version 1.1.3
  *
  * Authors: 
  *  - Stephen Hoogendijk (TheCodeAssassin)
