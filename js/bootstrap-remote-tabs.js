@@ -2,9 +2,11 @@ var $ = jQuery;
 /*!
  *
  * Bootstrap remote data tabs plugin
- * Version 1.1.1
+ * Version 1.1.2
  *
- * Author: Stephen Hoogendijk (TheCodeAssassin)
+ * Authors: 
+ *  - Stephen Hoogendijk (TheCodeAssassin)
+ *  - Ilia Shakitko <shakitko@gmail.com>
  *
  * Licensed under the GPLV2 license.
  *
@@ -22,12 +24,12 @@ $(function() {
     // try to navigate to the tab/accordion last given in the URL
     var hash = document.location.hash;
     if (hash) {
-       var hasTab = $('[data-toggle=tab][href='+hash+']');	
+       var hasTab = $('[data-toggle=tab][href*='+hash+']');	
        if (hasTab) {
             hasTab.tab('show');
        }
    
-       var hasAccordion = $('[data-toggle=collapse][href='+hash+']');
+       var hasAccordion = $('[data-toggle=collapse][href*='+hash+']');
        if (hasAccordion) {	   
            // for some reason we cannot execute the 'show' event for an accordion properly, so here's a workaround        
            if (hasAccordion[0] != $('[data-toggle=collapse]:first')[0]) {

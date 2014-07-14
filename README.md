@@ -1,6 +1,8 @@
 Bootstrap remote data plugin
 =====================
-Author: Stephen Hoogendijk - TheCodeAssassin
+Authors: 
+  - Stephen Hoogendijk - TheCodeAssassin
+  - Ilia Shakitko <shakitko@gmail.com>
 
 This project is licensed under the GPLV2 license.
 
@@ -23,7 +25,7 @@ Installation
 - Clone this repository or download the latest stable
 - Copy the bootstrap-remote-tabs.js in your js directory.
 - Include it:
-<script type="text/javascript" src="js/bootstrap-remote-tabs-2-3.js"></script>
+<script type="text/javascript" src="js/bootstrap-remote-tabs.min.js"></script>
 - If you want a loading mask to appear when you load your remote content, also include the following files: js/jquery.loadmask.js (before the remote tabs plugin)
 ,css/jquery.loadmask.css. and img/loading.gif.
 
@@ -53,6 +55,10 @@ shown event.
 
 Changelog
 ===
+Version 1.1.2
+------
+CSS Selector fix for matching #hash anywhere in the "href" attribute
+
 Version 1.1.1
 ------
 Added support for accordions
