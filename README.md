@@ -25,7 +25,7 @@ Installation
 - Clone this repository or download the latest stable
 - Copy the bootstrap-remote-tabs.js in your js directory.
 - Include it:
-<script type="text/javascript" src="js/bootstrap-remote-tabs.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-remote-tabs-2-3.js"></script>
 - If you want a loading mask to appear when you load your remote content, also include the following files: js/jquery.loadmask.js (before the remote tabs plugin)
 ,css/jquery.loadmask.css. and img/loading.gif.
 
@@ -47,6 +47,10 @@ Check the demo for details on how to use this plugin.
 
 *Note: The properties are still named data-tab due to backwards compatibility*
 
+Settings
+===
+You can change the default settings on 
+
 Note
 ====
 This plugin hooks into the bootstrap tab/accordion 'show' event. In order to use a custom event callback, you can provide data-tab-callback
@@ -55,9 +59,12 @@ shown event.
 
 Changelog
 ===
-Version 1.1.3
+Version 1.2.0
 ------
-CSS Selector fix for matching #hash anywhere in the "href" attribute
+Added settings
+Added load first page option (default false)
+Added option to have a custom loading function
+
 
 Version 1.1.1
 ------
