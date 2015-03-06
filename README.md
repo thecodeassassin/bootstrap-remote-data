@@ -45,6 +45,10 @@ Check the demo for details on how to use this plugin.
 
 *Note: The properties are still named data-tab due to backwards compatibility*
 
+Settings
+===
+You can change the default settings on 
+
 Note
 ====
 This plugin hooks into the bootstrap tab/accordion 'show' event. In order to use a custom event callback, you can provide data-tab-callback
@@ -53,6 +57,13 @@ shown event.
 
 Changelog
 ===
+Version 1.2.0
+------
+Added settings
+Added load first page option (default false)
+Added option to have a custom loading function
+
+
 Version 1.1.1
 ------
 Added support for accordions
