@@ -1,0 +1,20 @@
+{
+"name": "bootstrap-remote-data",
+"main": "js/bootstrap-remote-tabs.js",
+"version": "1.2.0",
+"homepage": "https://github.com/thecodeassassin/bootstrap-remote-data",
+"authors": [
+"Stephen Hoogendijk"
+],
+"description": "Simple boostrap plugin to allow tabs and accordions to fetch their data from a remote source",
+"keywords": [
+"bootstrap",
+"remote",
+"tab"
+],
+"dependencies": {
+"bootstrap": ">=2.3.0"
+},
+"license": "GPL",
+"ignore": []
+}
