@@ -47,7 +47,27 @@ Check the demo for details on how to use this plugin.
 
 Settings
 ===
-You can change the default settings on 
+You can change the default settings of this plugin by providing the settings as a global variable.
+
+There are two options currently:
+
+* customLoadFn (callback): this is a custom loading function, defaults to the built-in loader
+* loadFirstTab (boolean): whether to load the first tab on page load or not (defaults to false)
+
+```
+var bootstrapRemoteTabSettings = {
+   customLoadFn: function(isLoading) {
+      var loader = $('.custom-loader');
+      
+      if (isLoading) {
+        loader.show();
+      } else {
+        loader.hide();
+      }
+   },
+   loadFirstTab: true
+}
+```
 
 Note
 ====
