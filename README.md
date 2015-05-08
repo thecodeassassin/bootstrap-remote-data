@@ -60,31 +60,31 @@ Changelog
 
 Version 1.2.1
 ------
-Fixed issue #7 - reported by tofanelli
+*  Fixed issue #7 - reported by tofanelli
 
 
 Version 1.2.0
 ------
-Added settings
-Added load first page option (default false)
-Added option to have a custom loading function
+*  Added settings
+*  Added load first page option (default false)
+*  Added option to have a custom loading function
 
 
 Version 1.1.1
 ------
-Added support for accordions
+*  Added support for accordions
 
 
 Version 1.1.0
 ------
-Added feature to go to the tab specified in the URL (for example #tab1 will open the tab with ID #tab1)
+*  Added feature to go to the tab specified in the URL (for example #tab1 will open the tab with ID #tab1)
 
 
 Version 1.0.1
 ------
-Added minified version of the script. Fixed small issue with gracefully degrading
+*   Added minified version of the script. Fixed small issue with gracefully degrading
 
 Version 1.0.0
 ------
-- Initial release
+*   Initial release
 
