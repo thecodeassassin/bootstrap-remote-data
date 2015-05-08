@@ -21,11 +21,11 @@ var hasLoadingMask = (jQuery().mask ? true : false),
         customLoadFn: null,
         loadFirstTab: false
     },
-    customSettings;
+    customSettings = $.extend({}, defaultSettings);
 
 
 if (typeof bootstrapRemoteTabSettings != 'undefined') {
-    customSettings = $.extend({}, defaultSettings, bootstrapRemoteTabSettings);
+    customSettings = $.extend({}, bootstrapRemoteTabSettings);
 }
 
 $(function () {
