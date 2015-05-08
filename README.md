@@ -57,6 +57,12 @@ shown event.
 
 Changelog
 ===
+
+Version 1.2.1
+------
+Fixed issue #7 - reported by tofanelli
+
+
 Version 1.2.0
 ------
 Added settings
